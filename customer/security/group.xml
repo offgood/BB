@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="module_Employee_category" model="ir.module.category">
+      <field name="name">Customers Access</field>
+      <field name="description">User access level for this module</field>
+      <field name="sequence">1</field>
+    </record>
+
+     <record id="emp_group_AD" model="res.groups">
+      <field name="name">Customer Admin Access</field>     
+      <field name="category_id" ref="module_Employee_category"/> 
+    </record>
+
+
+
+
+
+
+    
+ 
+
+
+</odoo>

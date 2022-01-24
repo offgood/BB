@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="lead_action" model="ir.actions.act_window">
+        <field name="name">Leads</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.lead</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new Leads
+            </p>
+		</field>
+    </record> 
+
+
+
+	<record id="lead_tree" model="ir.ui.view">
+		<field name="name">customer.lead.tree</field>
+		<field name="model">customer.lead</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="lead_name"/>
+				<field name="company_id"/>
+				<field name="contacts_id"/>
+                <field name="user_id"/>
+				<field name="sale_team_id"/>
+                <field name="e_mail"/>
+                <field name="mobile_phone"/>
+                <field name="phone"/>
+                <field name="fax"/>
+                <field name="line_id"/>
+			</tree>
+		</field>
+	</record>
+
+
+   <!-- ยังไม่ได้แก้ From -->
+    <record id="lead_form" model="ir.ui.view">
+		<field name="name">customer.lead.form</field>
+		<field name="model">customer.lead</field>
+		<field name="arch" type="xml">
+			<form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <label for="lead_name" class="oe_edit_only" string="Leads"/>
+                        <h1>
+                            <field name="lead_name" />
+                        </h1>
+                        <div name="options_active"/>
+                    </div>
+                    <group>
+                        <group name="left">
+                            <!-- Preload all the partner's information -->
+                            <field name="company_id"/>
+                            <field name="address"/>
+                            <field name="province"/>
+                            <field name="district"/>
+                            <field name="sub_district"/>
+                            <field name="line_id"/>
+                        </group>
+                        <group name="right">
+                            <field name="t_name"/>
+                            <field name="contacts_id"/>
+                            <field name="e_mail"/>
+                            <field name="mobile_phone" />
+                            <field name="phone"/>
+                            <field name="fax"/>
+                        </group>
+                    </group>
+                    
+				</sheet>
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+					<field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+			</form>
+		</field>
+	</record>
+
+        
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_organize,customer.organize,model_customer_organize,,1,1,1,1
+access_customer_organize_typeor,customer.organize.typeor,model_customer_organize_typeor,,1,1,1,1
+access_customer_customers,customer.customers,model_customer_customers,,1,1,1,1
+
