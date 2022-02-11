@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="req_access_type" model="ir.module.category">
+        <field name="name">Request Access</field>
+        <field name="description">User access level for this module</field>
+        <field name="sequence">10</field>
+    </record>
+    
+    <record id="req_group_sale" model="res.groups">
+        <field name="name">Request Sale/User Access</field>     
+        <field name="category_id" ref="req_access_type"/>
+    </record>
+    <record id="req_group_purchase" model="res.groups">
+        <field name="name">Request Purchase Access</field>     
+        <field name="category_id" ref="req_access_type"/>
+        <field name="implied_ids" eval="[(4, ref('req_group_sale'))]"/>
+    </record>
+
+    <record id="req_group_admin" model="res.groups">
+        <field name="name">Request Admin Access</field>     
+        <field name="category_id" ref="req_access_type"/>
+        <field name="implied_ids" eval="[(4, ref('req_group_purchase'))]"/>
+    </record>
+
+    <record id="record_rule_sale" model="ir.rule">
+        <field name="name">SR PR Sale/User</field>
+        <field name="model_id" ref="model_sr_pr_request"/>
+        <field name="domain_force">['|',('owner_id', '=', user.id),('teamlead_id', '=', user.id)]</field>      
+        <field name="groups" eval="[(4, ref('req_group_sale'))]"/>
+    </record> 
+
+    <record id="record_rule_admin" model="ir.rule">
+        <field name="name">SR PR Admin</field>
+        <field name="model_id" ref="model_sr_pr_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>      
+        <field name="groups" eval="[(4, ref('req_group_admin'))]"/>
+    </record> 
+
+    <record id="record_rule_purchase" model="ir.rule">
+        <field name="name">SR PR Purchase</field>
+        <field name="model_id" ref="model_sr_pr_request"/>
+        <field name="domain_force">[('state', 'not in', ['wait' , 'done', 'cancel', 'draft'])]</field>      
+        <field name="groups" eval="[(4, ref('req_group_purchase'))]"/>
+    </record> 
+</odoo>

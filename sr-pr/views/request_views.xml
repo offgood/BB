@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="req_action_ref_new" model="ir.actions.act_window">
+        <field name="name">Reference</field>
+        <field name="res_model">sr_pr.request</field>
+        <field name="view_mode">form,tree,graph</field>
+    </record>
+
+
+    <record id="request_view_tree" model="ir.ui.view">
+        <field name="name">sr_pr.request.tree</field>
+        <field name="model">sr_pr.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                
+                    <field name="name" width="50%"/>
+                    <field name="rev" width="5%" />
+                    <field name="request_type" width="20%" readonly="1"/>
+                    <field name="project_id" />
+                    <field name="owner_id" invisible="1"/>
+                    <field name="team_id" />
+                    <field name="teamlead_id"/>
+                    <field name="request_date" />
+                    <field name="delivery_date" />
+                    <field name="due_date" />
+                    <field name="state" decoration-danger  ="state == 'cancel' or state == 'Cancelled'" decoration-warning ="state == 'wait' or state == 'Waiting for approval'" decoration-primary ="state == 'submit' or state == 'In progress'" decoration-success="state == 'Done' or state == 'done' or state == 'Approve' or state == 'approve'" decoration-info="state == 'draft' or state == 'draft'" widget="badge" />
+                
+            </tree>
+        </field>    
+    </record>
+    <record id="request_view_form" model="ir.ui.view">
+        <field name="name">sr_pr.request.form</field>
+        <field name="model">sr_pr.request</field>
+        <field name="arch" type="xml">
+            <form string="Sales Request / Purchase Request">
+                <header>
+                    <button id="button_draft" name="action_draft" string="Draft" class="btn-primary" type="object" states="cancel"/>
+                    <button id="button_ask" name="action_wait" string="Ask for approve" class="btn-primary" type="object" states="draft"/>
+                    <button id="button_approve" name="action_approve" string="Approve" class="btn-primary" type="object" states="wait"/>
+                    <button id="button_submit" name="action_submit" string="Submit" class="btn-primary" type="object" states="approve" />
+                    <button id="button_done" name="action_done" string="Done" class="btn-primary" type="object" states="submit"/>
+                    <button id="button_ref" name="action_ref" string="New Ref" class="btn-primary" type="object" states="draft"/>   
+                    <button id="button_cancel" name="action_cancel" string="Cancel" type="object" states="draft,wait,approve,submit" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approve,wait,submit,done" readonly="1" />
+                </header>
+                <sheet>
+                    <script>
+                        bt = document.getElementById('button_approve')
+                        name = document.getElementsByName('teamlead_id')[0].innerText
+                        current_user = self.odoo.session_info.partner_display_name
+                        if(name === current_user)
+                        {
+                          bt.hidden  = 0;
+                        }
+                        else
+                        {
+                          bt.hidden  = 1;
+                        }
+                    </script>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="name" style="width: 25%"/> 
+                        </h2>
+                    </div>
+                    <group>
+                        <field name="rev" attrs="{'invisible': [('rev', '=', 0)]}"/>
+                    </group>
+                    
+                    <field name="request_type" widget="radio" options="{'horizontal': true}" style="width: 50%"/>
+                    <div>
+                        <group>
+                            <group>
+                                <field name="project_id" style="width: 70%"/>
+                                <field name="partner_id" style="width: 70%"/>
+                                <field name="address" style="width: 40%"/>
+                                <field name="delivery_site" style="width: 70%" attrs="{'invisible': [('address', '!=', 'site')], 'required': [('address', '=', 'site')]}"/>
+                                <field name="tel" style="width: 40%" attrs="{'invisible': [('request_type', '=', 'PR')]}"/>
+                                <field name="rec_name" style="width: 70%" attrs="{'invisible': [('request_type', '=', 'PR')]}"/>
+                                <field name="owner_id" style="width: 70%"/>
+                                <field name="request_date" style="width: 40%" invisible="True" />
+                                <field name="desired_date" style="width: 70%"/>
+                            </group>
+                            <group>
+                                <field name="delivery_date" style="width: 40%" />
+                                <field name="due_date" style="width: 40%" attrs="{'invisible': [('request_type', '=', 'PR')]}"/>
+                                <field name="Capacity" style="width: 70%"/>
+                                <field name="Po" style="width: 40%"/>
+                                <field name="team_id" style="width: 70%"/>
+                                <field name="teamlead_id" id="teamlead" style="width: 70%"/>
+                                <field name="status"/>
+                            </group>
+                        </group>
+                    </div>
+                    <!-- Orderline -->
+                    <notebook>
+                        <page string="Order Lines" name="order_lines">
+                            <field
+                                name="order_line"
+                                widget="section_and_note_one2many"
+                                mode="tree,kanban"
+                            >
+                                <form>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_id" />
+                                    <field name="product_type" />
+                                    <field name="unit" />
+                                    <label for="name" string="Description" attrs="{'invisible': [('display_type', '!=', False)]}"/>
+                                    <label for="name" string="Section Name (eg. Products, Services)" attrs="{'invisible': [('display_type', '!=', 'line_section')]}"/>
+                                    <label for="name" string="Note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
+                                    <field name="name" />
+                                </form>
+                                <tree
+                                    string="Sales Order Lines"
+                                    editable="bottom"
+                                >
+                                    
+                                    <control>
+                                        <create name="add_product_control" string="Add a product"/>
+                                        <create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_id" options="{'no_open': True}" />
+                                    <field name="product_type" options="{'no_open': True}" />
+                                    <field name="unit" />
+                                    <field name="name" widget="section_and_note_text" optional="show"/>
+                                </tree>
+                                
+                            </field>
+                        </page>
+                        <page string="Service" name="service_cost">
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="install_cost"/>
+                                        <field name="training_cost"/>
+                                        <field name="warranty_cost"/>
+                                        <field name="war_mc"/>
+                                    </group>
+                                    <group>
+                                        <field name="warranty_time"/>
+                                        <field name="payment_con"/>
+                                        <field name="description"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="request_action" model="ir.actions.act_window">
+        <field name="name">Sales Request/Purchase Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sr_pr.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                    เพิ่ม SR/PR
+                </p>
+        </field>
+    </record>
+<menuitem id="request_root" name="SR/PR" sequence="6" />
+<menuitem id="sr_pr_req_root" name="Request" parent="request_root" action="request_action" sequence="1" />
+<!-- <menuitem id="sr_pr_req_app" name="Request Approval" parent="sr_pr_req_root" action="view_request_tree_extend" sequence="1" /> -->
+
+</odoo>

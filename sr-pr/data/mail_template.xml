@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Email template -->
+        <record id="email_template_request_approval_mail" model="mail.template">
+            <field name="name">Request Approval Mail</field>
+            <field name="email_from">${object.owner_id.email or ''}</field>
+            <field name="subject">RMCL | SR-PR Approval Request | Quotation ${object.name or '' }</field>
+            <field name="email_to">${object.teamlead_id.email}</field>
+            <field name="model_id" ref="sr-pr.model_sr_pr_request"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html">
+                <![CDATA[
+                <p> Dear Sir / Madam,</p> 
+                
+ <p><b>Notes:</b></p>
+ <p>${object.get_reason_notes()}</p>  
+ 
+     <p>Thank you</p>   
+             ]]>
+            </field>
+        </record>
+    </data>
+</odoo>

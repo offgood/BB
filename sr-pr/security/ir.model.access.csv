@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sr_pr_request_admin,sr_pr.request,model_sr_pr_request,req_group_admin,1,1,1,1
+access_sr_pr_request_purchase,sr_pr.request,model_sr_pr_request,req_group_purchase,1,1,1,1
+access_sr_pr_request_sale,sr_pr.request,model_sr_pr_request,req_group_sale,1,1,1,1
+access_sr_orderline_admin,sr.orderline,model_sr_orderline,req_group_admin,1,1,1,1
+access_sr_orderline_purchase,sr.orderline,model_sr_orderline,req_group_purchase,1,1,1,1
+access_sr_orderline_sale,sr.orderline,model_sr_orderline,req_group_sale,1,1,1,1
+
